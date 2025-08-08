@@ -4,7 +4,6 @@
  */
 
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 
 // Rate limiting storage (in production, use Redis/KV)
 const rateLimitStore = new Map();
@@ -255,6 +254,7 @@ Respond ONLY in valid JSON format:
   "email_subject": "Professional Email Subject"
 }`;
 
+    // Use global fetch (available in Node.js 18+)
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {

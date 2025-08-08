@@ -4,7 +4,6 @@
  */
 
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 
 export const config = {
     runtime: 'nodejs18.x',
