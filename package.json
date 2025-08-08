@@ -1,0 +1,31 @@
+{
+  "name": "servicem8-translator",
+  "version": "1.0.0",
+  "description": "Smart Message Translator for ServiceM8",
+  "main": "api/translate.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "jsonwebtoken": "^9.0.0",
+    "node-fetch": "^3.3.1",
+    "crypto": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "keywords": [
+    "servicem8",
+    "translation",
+    "openai",
+    "addon"
+  ],
+  "author": "ServiceM8 Translator Team",
+  "license": "MIT"
+}

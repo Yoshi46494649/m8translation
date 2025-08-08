@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Message Translator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Smart Message Translator</h1>
+            <div class="status-indicator" id="statusIndicator">Ready</div>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <label for="messageInput">Enter message to translate:</label>
+                <textarea 
+                    id="messageInput" 
+                    placeholder="Type or paste your message here..."
+                    rows="6"
+                    maxlength="1000"
+                ></textarea>
+                <div class="input-info">
+                    <span id="charCount">0/1000</span>
+                    <span id="detectedLanguage" class="detected-language"></span>
+                </div>
+            </div>
+            
+            <div class="translation-section" id="translationSection" style="display: none;">
+                <label for="translatedOutput">English Translation:</label>
+                <div class="output-container">
+                    <div id="translatedOutput" class="translated-text"></div>
+                    <button id="copyButton" class="copy-button" title="Copy to clipboard">📋</button>
+                </div>
+                
+                <label for="emailSubject">Generated Email Subject:</label>
+                <div class="output-container">
+                    <div id="emailSubject" class="email-subject"></div>
+                </div>
+            </div>
+            
+            <div class="actions">
+                <button id="translateButton" class="primary-button">
+                    <span class="button-text">Translate Message</span>
+                    <span class="loading-spinner" id="loadingSpinner"></span>
+                </button>
+                
+                <div class="action-buttons" id="actionButtons" style="display: none;">
+                    <button id="emailButton" class="secondary-button">
+                        📧 Translate & Open Email
+                    </button>
+                    <button id="smsButton" class="tertiary-button">
+                        📱 Send as SMS
+                    </button>
+                </div>
+            </div>
+            
+            <div class="progress-status" id="progressStatus" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">Translating...</div>
+            </div>
+            
+            <div class="auto-close" id="autoClose" style="display: none;">
+                <div class="countdown">Auto-closing in <span id="countdown">5</span> seconds</div>
+                <button id="cancelClose" class="cancel-button">Cancel</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="keyboard-shortcuts">
+                <span>Ctrl+Enter: Translate & Email</span>
+                <span>Esc: Close</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

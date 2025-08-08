@@ -1,0 +1,32 @@
+{
+  "addon_uuid": "f72bb0a4-3f89-437a-aa3d-231672e4f58b",
+  "name": "Smart Message Translator",
+  "version": "1.0.0",
+  "description": "AI-powered translation tool for ServiceM8 messages with automatic email subject generation",
+  "author": "ServiceM8 Translator Team",
+  "actions": [
+    {
+      "name": "Translate Message",
+      "contexts": ["job"],
+      "type": "online",
+      "url": "https://translator-addon.vercel.app/translate-compose",
+      "display_mode": "popup",
+      "popup_width": 540,
+      "popup_height": 420,
+      "icon": "translate"
+    }
+  ],
+  "oauth": {
+    "client_id": "241055",
+    "client_secret": "ef2decf37c574a6abf82231673600efb",
+    "redirect_uri": "https://translator-addon.vercel.app/api/oauth/callback",
+    "scopes": ["job:read", "customer:read"]
+  },
+  "permissions": {
+    "required": ["job:read", "customer:read"],
+    "optional": []
+  },
+  "supported_languages": ["en"],
+  "category": "communication",
+  "tags": ["translation", "ai", "communication", "multilingual"]
+}
