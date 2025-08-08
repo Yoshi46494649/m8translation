@@ -4,16 +4,9 @@
   "description": "Smart Message Translator for ServiceM8",
   "main": "api/translate.js",
   "scripts": {
-    "dev": "vercel dev",
-    "build": "echo 'Build completed - Serverless functions ready'",
-    "deploy": "vercel --prod",
-    "start": "node server.js"
+    "dev": "vercel dev"
   },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
-    "jsonwebtoken": "^9.0.0"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=18.x"
   },
