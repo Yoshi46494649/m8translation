@@ -159,18 +159,21 @@ async function handleRequest(req, res) {
             });
         }
 
-        // FORCE MOCK MODE for debugging - completely bypass OpenAI
-        console.log('=== MOCK MODE ACTIVE ===');
-        console.log('Sanitized text:', sanitizedText);
-        console.log('Final company UUID:', finalCompanyUuid);
-        console.log('Final access token (first 10 chars):', finalAccessToken ? finalAccessToken.substring(0, 10) + '...' : 'undefined');
-        
-        // Return mock translation immediately
-        var translationResult = {
-            translated_text: "Thank you for tomorrow. I'll clean up.",
-            email_subject: "Service Update - Tomorrow's cleaning schedule",
-            detected_language: "Japanese"
-        };
+        // Get OpenAI API key (in production, fetch from encrypted storage)
+        var openaiApiKey = process.env.OPENAI_API_KEY;
+        if (!openaiApiKey) {
+            console.error('OpenAI API key not configured - using mock response for testing');
+            // Return mock translation for testing
+            return res.status(200).json({
+                translated_text: "Thank you for tomorrow. I'll clean up.",
+                email_subject: "Service Update - Tomorrow's cleaning schedule",
+                detected_language: "Japanese",
+                processing_time_ms: Date.now() - startTime
+            });
+        }
+
+        // Detect language and translate using sanitized text
+        var translationResult = await translateWithOpenAI(sanitizedText, openaiApiKey);
 
         // Log successful translation (structured logging - no sensitive data)
         console.log(JSON.stringify({
