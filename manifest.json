@@ -8,6 +8,7 @@
     {
       "name": "Translate Message",
       "contexts": ["job"],
+      "entity": "job",
       "type": "online",
       "url": "https://m8translation.vercel.app/translate-compose",
       "display_mode": "popup",
