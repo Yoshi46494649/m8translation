@@ -10,16 +10,29 @@ const rateLimitStore = new Map();
 
 // Vercel will auto-detect this as a serverless function
 
-module.exports = async function handler(req, res) {
+module.exports = function handler(req, res) {
+    // Wrap everything in try-catch for maximum error capture
+    try {
+        return handleRequest(req, res);
+    } catch (error) {
+        console.error('Critical handler error:', error);
+        return res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message 
+        });
+    }
+};
+
+async function handleRequest(req, res) {
     // CORS and security headers - ServiceM8 multiple origins support
-    const allowedOrigins = [
+    var allowedOrigins = [
         'https://app.servicem8.com',
         'https://addon.go.servicem8.com',
         'https://go.servicem8.com',
         'https://platform.servicem8.com'
     ];
     
-    const origin = req.headers.origin;
+    var origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
     } else {
@@ -42,7 +55,7 @@ module.exports = async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const startTime = Date.now();
+    var startTime = Date.now();
 
     try {
         // Debug logging - full request analysis
@@ -52,15 +65,34 @@ module.exports = async function handler(req, res) {
         console.log('Body:', JSON.stringify(req.body, null, 2));
         console.log('Query:', JSON.stringify(req.query, null, 2));
         
+        // Safe body parsing with fallback
+        var requestBody = req.body || {};
+        if (typeof requestBody === 'string') {
+            try {
+                requestBody = JSON.parse(requestBody);
+            } catch (parseError) {
+                console.error('JSON parse error:', parseError);
+                return res.status(400).json({ 
+                    error: 'Invalid JSON in request body' 
+                });
+            }
+        }
+        
         // Validate request body
-        const { text, company_uuid, access_token, session_token } = req.body;
+        var text = requestBody.text;
+        var company_uuid = requestBody.company_uuid;
+        var access_token = requestBody.access_token;
+        var session_token = requestBody.session_token;
 
         // Resolve session token to get actual credentials
-        let resolvedCredentials = { company_uuid, access_token };
+        var resolvedCredentials = { 
+            company_uuid: company_uuid, 
+            access_token: access_token 
+        };
         
         if (session_token && !access_token) {
             // Use session token to resolve credentials
-            const sessionData = resolveSessionToken(session_token);
+            var sessionData = resolveSessionToken(session_token);
             if (!sessionData) {
                 return res.status(401).json({ 
                     error: 'Invalid or expired session' 
@@ -74,11 +106,11 @@ module.exports = async function handler(req, res) {
         }
 
         // Use resolved credentials
-        const finalCompanyUuid = resolvedCredentials.company_uuid;
-        const finalAccessToken = resolvedCredentials.access_token;
+        var finalCompanyUuid = resolvedCredentials.company_uuid;
+        var finalAccessToken = resolvedCredentials.access_token;
 
         // Validate company_uuid format (UUID v4)
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        var uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(finalCompanyUuid)) {
             return res.status(400).json({ 
                 error: 'Invalid company UUID format' 
@@ -92,7 +124,7 @@ module.exports = async function handler(req, res) {
             });
         }
         
-        const sanitizedText = text
+        var sanitizedText = text
             .replace(/[<>\"'&]/g, '') // Remove potentially dangerous characters
             .trim();
 
@@ -110,7 +142,7 @@ module.exports = async function handler(req, res) {
         }
 
         // Rate limiting check
-        const rateLimitResult = checkRateLimit(finalCompanyUuid);
+        var rateLimitResult = checkRateLimit(finalCompanyUuid);
         if (!rateLimitResult.allowed) {
             return res.status(429).json({ 
                 error: 'Rate limit exceeded. Please try again later.',
@@ -120,28 +152,25 @@ module.exports = async function handler(req, res) {
 
         // Temporarily bypass ServiceM8 token validation for testing
         // TODO: Re-enable strict validation in production
-        const isValidToken = true; // await isValidServiceM8Token(finalAccessToken, finalCompanyUuid);
+        var isValidToken = true; // await isValidServiceM8Token(finalAccessToken, finalCompanyUuid);
         if (!isValidToken) {
             return res.status(401).json({ 
                 error: 'Invalid or expired ServiceM8 access token' 
             });
         }
 
-        // Get OpenAI API key (in production, fetch from encrypted storage)
-        const openaiApiKey = process.env.OPENAI_API_KEY;
-        if (!openaiApiKey) {
-            console.error('OpenAI API key not configured - using mock response for testing');
-            // Return mock translation for testing
-            return res.status(200).json({
-                translated_text: "Thank you for tomorrow. I'll clean up.",
-                email_subject: "Service Update - Tomorrow's cleaning schedule",
-                detected_language: "Japanese",
-                processing_time_ms: Date.now() - startTime
-            });
-        }
-
-        // Detect language and translate using sanitized text
-        const translationResult = await translateWithOpenAI(sanitizedText, openaiApiKey);
+        // FORCE MOCK MODE for debugging - completely bypass OpenAI
+        console.log('=== MOCK MODE ACTIVE ===');
+        console.log('Sanitized text:', sanitizedText);
+        console.log('Final company UUID:', finalCompanyUuid);
+        console.log('Final access token (first 10 chars):', finalAccessToken ? finalAccessToken.substring(0, 10) + '...' : 'undefined');
+        
+        // Return mock translation immediately
+        var translationResult = {
+            translated_text: "Thank you for tomorrow. I'll clean up.",
+            email_subject: "Service Update - Tomorrow's cleaning schedule",
+            detected_language: "Japanese"
+        };
 
         // Log successful translation (structured logging - no sensitive data)
         console.log(JSON.stringify({
