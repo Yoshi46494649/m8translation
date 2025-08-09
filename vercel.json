@@ -1,8 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/translate-compose",
-      "dest": "/translate-compose.js"
+      "source": "/translate-compose",
+      "destination": "/api/translate-compose"
     }
   ]
 }
