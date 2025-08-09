@@ -12,7 +12,7 @@ const rateLimitStore = new Map();
 
 module.exports = async function handler(req, res) {
     // CORS and security headers
-    res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('X-Frame-Options', 'ALLOWALL');

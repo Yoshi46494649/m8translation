@@ -143,7 +143,6 @@ exports.handler = (event, context, callback) => {
     <body>
         <div class="container">
             <h2>🌐 Smart Message Translator</h2>
-            <p style="margin-bottom: 16px; color: #666;">Job: <strong>` + strJobUUID + `</strong></p>
             
             <div class="input-section">
                 <label for="messageInput">Enter message to translate:</label>
@@ -214,6 +213,12 @@ exports.handler = (event, context, callback) => {
                 translationSection.style.display = 'none';
                 
                 try {
+                    console.log('Sending translation request:', {
+                        text: text,
+                        company_uuid: companyUUID,
+                        job_uuid: jobUUID
+                    });
+                    
                     const response = await fetch(API_BASE + '/api/translate', {
                         method: 'POST',
                         headers: {
@@ -226,6 +231,8 @@ exports.handler = (event, context, callback) => {
                             job_uuid: jobUUID
                         })
                     });
+                    
+                    console.log('Response status:', response.status);
                     
                     if (!response.ok) {
                         throw new Error('Translation failed');
@@ -244,7 +251,7 @@ exports.handler = (event, context, callback) => {
                     
                 } catch (error) {
                     console.error('Translation error:', error);
-                    translatedOutput.textContent = 'Translation failed. Please try again.';
+                    translatedOutput.textContent = 'Error: ' + error.message + '. Please check console for details.';
                     translationSection.style.display = 'block';
                 } finally {
                     translateButton.disabled = false;
