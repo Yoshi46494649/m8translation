@@ -20,11 +20,11 @@
     "client_id": "385289",
     "client_secret": "e10f7b835ed54ba08551231a2ad47cfb",
     "redirect_uri": "https://m8translation.vercel.app/api/oauth/callback",
-    "scopes": ["job:read", "customer:read"]
+    "scopes": ["job:read", "customer:read", "send_email", "send_sms"]
   },
   "permissions": {
     "required": ["job:read", "customer:read"],
-    "optional": []
+    "optional": ["send_email", "send_sms"]
   },
   "supported_languages": ["en"],
   "category": "communication",
