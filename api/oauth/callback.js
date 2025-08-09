@@ -193,7 +193,7 @@ async function exchangeCodeForToken(code) {
             code: code,
             client_id: process.env.SERVICEM8_CLIENT_ID,
             client_secret: process.env.SERVICEM8_CLIENT_SECRET,
-            redirect_uri: `https://${process.env.VERCEL_URL || 'translator-addon.vercel.app'}/api/oauth/callback`
+            redirect_uri: `https://${process.env.VERCEL_URL || 'm8translation.vercel.app'}/api/oauth/callback`
         })
     });
 
@@ -290,7 +290,7 @@ function generateAuthUrl(companyUuid) {
     const params = new URLSearchParams({
         response_type: 'code',
         client_id: process.env.SERVICEM8_CLIENT_ID,
-        redirect_uri: `https://${process.env.VERCEL_URL || 'translator-addon.vercel.app'}/api/oauth/callback`,
+        redirect_uri: `https://${process.env.VERCEL_URL || 'm8translation.vercel.app'}/api/oauth/callback`,
         scope: 'job:read customer:read',
         state: generateStateParameter(companyUuid)
     });

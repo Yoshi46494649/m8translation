@@ -9,7 +9,7 @@
       "name": "Translate Message",
       "contexts": ["job"],
       "type": "online",
-      "url": "https://translator-addon.vercel.app/translate-compose",
+      "url": "https://m8translation.vercel.app/translate-compose",
       "display_mode": "popup",
       "popup_width": 540,
       "popup_height": 420,
@@ -19,7 +19,7 @@
   "oauth": {
     "client_id": "241055",
     "client_secret": "ef2decf37c574a6abf82231673600efb",
-    "redirect_uri": "https://translator-addon.vercel.app/api/oauth/callback",
+    "redirect_uri": "https://m8translation.vercel.app/api/oauth/callback",
     "scopes": ["job:read", "customer:read"]
   },
   "permissions": {
