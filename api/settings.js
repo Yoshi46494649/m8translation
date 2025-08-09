@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 // Vercel will auto-detect this as a serverless function
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // CORS and security headers
     res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');

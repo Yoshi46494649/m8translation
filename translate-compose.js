@@ -9,7 +9,7 @@ const crypto = require('crypto');
 
 // Vercel will auto-detect this as a serverless function
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // Security headers for iframe embedding
     res.setHeader('X-Frame-Options', 'ALLOWALL');
     res.setHeader('X-Content-Type-Options', 'nosniff');

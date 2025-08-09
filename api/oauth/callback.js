@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 // Vercel will auto-detect this as a serverless function
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
     // CORS and security headers
     res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -285,7 +285,7 @@ function validateState(state) {
 /**
  * Generate OAuth authorization URL
  */
-export function generateAuthUrl(companyUuid) {
+function generateAuthUrl(companyUuid) {
     const baseUrl = 'https://api.servicem8.com/oauth/authorize';
     const params = new URLSearchParams({
         response_type: 'code',
@@ -306,3 +306,5 @@ function generateStateParameter(companyUuid) {
     const random = crypto.randomBytes(16).toString('hex');
     return Buffer.from(`${companyUuid}:${timestamp}:${random}`).toString('base64');
 }
+
+module.exports.generateAuthUrl = generateAuthUrl;

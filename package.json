@@ -1,0 +1,9 @@
+{
+  "name": "servicem8-translator",
+  "version": "1.0.0",
+  "description": "Smart Message Translator for ServiceM8",
+  "engines": {
+    "node": "18.x"
+  },
+  "license": "MIT"
+}
