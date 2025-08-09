@@ -15,7 +15,8 @@
       "WebFetch(domain:developer.servicem8.com)",
       "WebFetch(domain:github.com)",
       "Bash(node:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": []
   }
