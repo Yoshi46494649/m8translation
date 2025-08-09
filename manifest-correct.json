@@ -1,0 +1,19 @@
+{
+  "name": "Smart Message Translator",
+  "version": "1.0.0",
+  "iconURL": "https://m8translation.vercel.app/icon-translate.png",
+  "supportURL": "https://m8translation.vercel.app",
+  "supportEmail": "support@example.com",
+  "oauth": {
+    "scope": "read_jobs read_customers"
+  },
+  "actions": [
+    {
+      "name": "Translate Message",
+      "type": "online",
+      "entity": "job",
+      "iconURL": "https://m8translation.vercel.app/icon-translate.png",
+      "event": "translate_message"
+    }
+  ]
+}

@@ -10,7 +10,10 @@
       "Bash(rm:*)",
       "Bash(git tag:*)",
       "WebFetch(domain:m8translation.vercel.app)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:developer.servicem8.com)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": []
   }
