@@ -109,8 +109,8 @@ async function handleRequest(req, res) {
         var finalCompanyUuid = resolvedCredentials.company_uuid;
         var finalAccessToken = resolvedCredentials.access_token;
 
-        // Validate company_uuid format (UUID v4)
-        var uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        // Validate company_uuid format (standard UUID format, ServiceM8 compatible)
+        var uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
         if (!uuidRegex.test(finalCompanyUuid)) {
             return res.status(400).json({ 
                 error: 'Invalid company UUID format' 
