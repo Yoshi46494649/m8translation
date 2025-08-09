@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Icon Generator</title>
+</head>
+<body>
+    <canvas id="canvas" width="512" height="512"></canvas>
+    <br>
+    <button onclick="downloadIcon()">Download PNG Icon</button>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Create gradient background
+        const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+        gradient.addColorStop(0, '#007cba');
+        gradient.addColorStop(1, '#0066a0');
+        
+        // Background circle
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(256, 256, 240, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // White border
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 8;
+        ctx.stroke();
+        
+        // Globe
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.arc(256, 256, 120, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Meridians
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.ellipse(256, 256, 60, 120, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.ellipse(256, 256, 120, 60, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Equator and meridian lines
+        ctx.moveTo(136, 256);
+        ctx.lineTo(376, 256);
+        ctx.moveTo(256, 136);
+        ctx.lineTo(256, 376);
+        ctx.stroke();
+        
+        // Text "A" and "あ"
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 32px Arial';
+        ctx.fillText('あ', 200, 200);
+        ctx.fillText('A', 280, 320);
+        
+        // Translation arrow
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(220, 240);
+        ctx.lineTo(280, 270);
+        ctx.lineTo(270, 280);
+        ctx.lineTo(290, 280);
+        ctx.lineTo(270, 300);
+        ctx.lineTo(280, 310);
+        ctx.lineTo(220, 280);
+        ctx.closePath();
+        ctx.fill();
+        
+        function downloadIcon() {
+            const link = document.createElement('a');
+            link.download = 'icon-translate-512.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
