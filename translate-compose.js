@@ -7,10 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
-export const config = {
-    runtime: 'nodejs18.x',
-    maxDuration: 5
-};
+// Vercel will auto-detect this as a serverless function
 
 export default async function handler(req, res) {
     // Security headers for iframe embedding

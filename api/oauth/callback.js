@@ -5,10 +5,7 @@
 
 const crypto = require('crypto');
 
-export const config = {
-    runtime: 'nodejs18.x',
-    maxDuration: 10
-};
+// Vercel will auto-detect this as a serverless function
 
 export default async function handler(req, res) {
     // CORS and security headers

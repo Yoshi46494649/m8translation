@@ -8,10 +8,7 @@ const crypto = require('crypto');
 // Rate limiting storage (in production, use Redis/KV)
 const rateLimitStore = new Map();
 
-export const config = {
-    runtime: 'nodejs18.x',
-    maxDuration: 10
-};
+// Vercel will auto-detect this as a serverless function
 
 export default async function handler(req, res) {
     // CORS and security headers

@@ -3,10 +3,7 @@
  * Resolves secure session tokens to ServiceM8 credentials
  */
 
-export const config = {
-    runtime: 'nodejs18.x',
-    maxDuration: 5
-};
+// Vercel will auto-detect this as a serverless function
 
 export default async function handler(req, res) {
     // CORS and security headers
