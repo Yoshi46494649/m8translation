@@ -1,33 +1,20 @@
 {
-  "addon_uuid": "f72bb0a4-3f89-437a-aa3d-231672e4f58b",
   "name": "Smart Message Translator",
   "version": "1.0.0",
-  "description": "AI-powered translation tool for ServiceM8 messages with automatic email subject generation",
-  "author": "ServiceM8 Translator Team",
+  "iconURL": "https://www.servicem8.com/images/addon-sdk-sample-icon.png",
+  "supportURL": "https://m8translation.vercel.app",
+  "supportEmail": "support@m8translation.com",
+  "oauth": {
+    "scope": "job:read customer:read publish_email publish_sms"
+  },
   "actions": [
     {
       "name": "Translate Message",
-      "contexts": ["job"],
-      "entity": "job",
       "type": "online",
-      "url": "https://m8translation.vercel.app/translate-compose",
-      "display_mode": "popup",
-      "popup_width": 540,
-      "popup_height": 420,
-      "icon": "translate"
+      "entity": "job",
+      "iconURL": "https://www.servicem8.com/images/addon-sdk-sample-icon.png",
+      "event": "translate_message",
+      "location": "modal"
     }
-  ],
-  "oauth": {
-    "client_id": "385289",
-    "client_secret": "e10f7b835ed54ba08551231a2ad47cfb",
-    "redirect_uri": "https://m8translation.vercel.app/api/oauth/callback",
-    "scopes": ["job:read", "customer:read", "publish_email", "publish_sms"]
-  },
-  "permissions": {
-    "required": ["job:read", "customer:read"],
-    "optional": ["publish_email", "publish_sms"]
-  },
-  "supported_languages": ["en"],
-  "category": "communication",
-  "tags": ["translation", "ai", "communication", "multilingual"]
+  ]
 }
