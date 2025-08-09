@@ -159,41 +159,50 @@ async function handleRequest(req, res) {
             });
         }
 
-        // Get OpenAI API key (in production, fetch from encrypted storage)
-        var openaiApiKey = process.env.OPENAI_API_KEY;
-        if (!openaiApiKey) {
-            console.error('OpenAI API key not configured - using mock response for testing');
-            // Return mock translation for testing
-            return res.status(200).json({
-                translated_text: "Thank you for tomorrow. I'll clean up.",
-                email_subject: "Service Update - Tomorrow's cleaning schedule",
-                detected_language: "Japanese",
-                processing_time_ms: Date.now() - startTime
-            });
-        }
-
-        // Detect language and translate using sanitized text
-        var translationResult = await translateWithOpenAI(sanitizedText, openaiApiKey);
-
-        // Log successful translation (structured logging - no sensitive data)
-        console.log(JSON.stringify({
-            timestamp: new Date().toISOString(),
-            level: 'info',
-            message: 'Translation completed',
-            company_uuid: finalCompanyUuid.substring(0, 8) + '***', // Masked UUID
-            processing_time_ms: Date.now() - startTime,
-            detected_language: translationResult.detected_language,
-            character_count: sanitizedText.length,
-            text_hash: crypto.createHash('sha256').update(sanitizedText).digest('hex').substring(0, 16) // Content fingerprint only
-        }));
-
-        // Return successful response
+        // Force mock response for debugging 500 error
+        console.log('Using forced mock response for debugging');
         return res.status(200).json({
-            translated_text: translationResult.translated_text,
-            email_subject: translationResult.email_subject,
-            detected_language: translationResult.detected_language,
+            translated_text: "Thank you for tomorrow. I'll clean up.",
+            email_subject: "Service Update - Tomorrow's cleaning schedule", 
+            detected_language: "Japanese",
             processing_time_ms: Date.now() - startTime
         });
+
+        // Get OpenAI API key (in production, fetch from encrypted storage)
+        // var openaiApiKey = process.env.OPENAI_API_KEY;
+        // if (!openaiApiKey) {
+        //     console.error('OpenAI API key not configured - using mock response for testing');
+        //     // Return mock translation for testing
+        //     return res.status(200).json({
+        //         translated_text: "Thank you for tomorrow. I'll clean up.",
+        //         email_subject: "Service Update - Tomorrow's cleaning schedule",
+        //         detected_language: "Japanese",
+        //         processing_time_ms: Date.now() - startTime
+        //     });
+        // }
+
+        // // Detect language and translate using sanitized text
+        // var translationResult = await translateWithOpenAI(sanitizedText, openaiApiKey);
+
+        // Log successful translation (structured logging - no sensitive data)
+        // console.log(JSON.stringify({
+        //     timestamp: new Date().toISOString(),
+        //     level: 'info',
+        //     message: 'Translation completed',
+        //     company_uuid: finalCompanyUuid.substring(0, 8) + '***', // Masked UUID
+        //     processing_time_ms: Date.now() - startTime,
+        //     detected_language: translationResult.detected_language,
+        //     character_count: sanitizedText.length,
+        //     text_hash: crypto.createHash('sha256').update(sanitizedText).digest('hex').substring(0, 16) // Content fingerprint only
+        // }));
+
+        // Return successful response
+        // return res.status(200).json({
+        //     translated_text: translationResult.translated_text,
+        //     email_subject: translationResult.email_subject,
+        //     detected_language: translationResult.detected_language,
+        //     processing_time_ms: Date.now() - startTime
+        // });
 
     } catch (error) {
         // Log error (structured logging - no sensitive data)
