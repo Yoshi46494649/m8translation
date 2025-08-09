@@ -1,21 +1,8 @@
 {
   "name": "servicem8-translator",
   "version": "1.0.0",
-  "description": "Smart Message Translator for ServiceM8",
-  "main": "api/translate.js",
-  "scripts": {
-    "dev": "vercel dev"
-  },
-  "dependencies": {},
   "engines": {
-    "node": ">=18.x"
+    "node": "18.x"
   },
-  "keywords": [
-    "servicem8",
-    "translation",
-    "openai",
-    "addon"
-  ],
-  "author": "ServiceM8 Translator Team",
   "license": "MIT"
 }

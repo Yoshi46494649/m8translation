@@ -1,0 +1,11 @@
+# Vercel ignore file
+.git
+.gitignore
+README.md
+SECURITY.md
+SECURITY-AUDIT-REPORT.md
+.env.example
+.env.local
+.env
+node_modules
+.claude
