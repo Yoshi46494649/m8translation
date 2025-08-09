@@ -1,7 +1,7 @@
 {
     "name": "Smart Message Translator",
     "version": "1.0",
-    "iconURL": "https://m8translation.vercel.app/icon-translate-512.png",
+    "iconURL": "https://m8translation.vercel.app/servicem8-translate-icon.png",
     "supportURL": "https://m8translation.vercel.app",
     "supportEmail": "support@example.com"
 }
