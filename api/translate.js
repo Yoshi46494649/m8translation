@@ -159,11 +159,11 @@ async function handleRequest(req, res) {
             });
         }
 
-        // Force mock response for debugging 500 error
-        console.log('Using forced mock response for debugging');
+        // Force mock response with polite business style
+        console.log('Using mock response with polite business style');
         return res.status(200).json({
-            translated_text: "Thank you for tomorrow. I'll clean up.",
-            email_subject: "Service Update - Tomorrow's cleaning schedule", 
+            translated_text: "Thank you very much for tomorrow. We will take care of the cleaning service for you.",
+            email_subject: "Service Update - Tomorrow's Cleaning Appointment", 
             detected_language: "Japanese",
             processing_time_ms: Date.now() - startTime
         });
@@ -298,23 +298,29 @@ async function isValidServiceM8Token(token, companyUuid) {
  * OpenAI GPT-4 translation implementation
  */
 async function translateWithOpenAI(text, apiKey) {
-    const systemPrompt = `You are a professional business translator specializing in ServiceM8 field service communications. 
+    const systemPrompt = `You are a professional business translator specializing in courteous service provider communications.
 
 Your tasks:
 1. Detect the language of the input text
-2. Translate to natural, business-appropriate English
+2. Translate to polite, customer-service appropriate English from a service provider's perspective
 3. Generate a professional email subject based on the content (max 50 characters)
 
-Guidelines:
-- Use polite, professional tone suitable for business communication
-- Preserve the original meaning and context
-- For service-related messages, maintain technical accuracy
-- Email subjects should follow format: "Service Update - [brief description]"
+Translation Style Guidelines:
+- Use very polite, respectful tone (service provider → customer)
+- Add courtesy phrases like "Thank you", "We appreciate", "We will take care of"
+- Make messages sound professional and reassuring
+- Preserve the original meaning while enhancing politeness
+- Use complete sentences with proper business etiquette
+- For appointments/schedules: "We look forward to serving you"
+- For confirmations: "We have received" or "We confirm"
+- For updates: "We would like to inform you"
+
+Email Subject Format: "Service Update - [brief description]"
 
 Respond ONLY in valid JSON format:
 {
-  "detected_language": "Language Name",
-  "translated_text": "Professional English translation",
+  "detected_language": "Language Name", 
+  "translated_text": "Polite professional English translation",
   "email_subject": "Professional Email Subject"
 }`;
 

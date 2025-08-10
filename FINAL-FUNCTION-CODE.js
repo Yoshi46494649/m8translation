@@ -35,10 +35,13 @@ exports.handler = (event, context, callback) => {
                 '.main-container {' +
                     'background: #ffffff;' +
                     'border-radius: 8px;' +
-                    'padding: 24px;' +
+                    'padding: 20px;' +
                     'box-shadow: 0 2px 4px rgba(0,0,0,0.1);' +
                     'max-width: 500px;' +
                     'margin: 0 auto;' +
+                    'min-height: calc(100vh - 40px);' +
+                    'display: flex;' +
+                    'flex-direction: column;' +
                 '}' +
                 'h1 {' +
                     'color: #007cba;' +
@@ -177,11 +180,75 @@ exports.handler = (event, context, callback) => {
                     'padding: 12px;' +
                     'margin-top: 16px;' +
                 '}' +
+                '/* Copy Button Styles */' +
+                '.result-item {' +
+                    'margin-bottom: 20px;' +
+                '}' +
+                '.result-content {' +
+                    'display: flex;' +
+                    'align-items: flex-start;' +
+                    'gap: 12px;' +
+                '}' +
+                '.result-content > div {' +
+                    'flex: 1;' +
+                '}' +
+                '.copy-btn {' +
+                    'background-color: #007cba;' +
+                    'color: white;' +
+                    'border: none;' +
+                    'padding: 8px 12px;' +
+                    'border-radius: 4px;' +
+                    'font-size: 12px;' +
+                    'font-weight: 600;' +
+                    'cursor: pointer;' +
+                    'transition: background-color 0.2s;' +
+                    'white-space: nowrap;' +
+                    'min-height: 36px;' +
+                '}' +
+                '.copy-btn:hover {' +
+                    'background-color: #0056b3;' +
+                '}' +
+                '.copy-btn.copied {' +
+                    'background-color: #28a745;' +
+                '}' +
+                '.copy-btn.copied:hover {' +
+                    'background-color: #218838;' +
+                '}' +
+                '/* Mobile Responsive Styles */' +
+                '@media (max-width: 480px) {' +
+                    'body {' +
+                        'padding: 10px;' +
+                        'font-size: 16px;' +
+                    '}' +
+                    '.main-container {' +
+                        'padding: 16px;' +
+                        'border-radius: 0;' +
+                        'margin: 0;' +
+                        'max-width: 100%;' +
+                        'box-shadow: none;' +
+                    '}' +
+                    '.result-content {' +
+                        'flex-direction: column;' +
+                        'gap: 8px;' +
+                    '}' +
+                    '.copy-btn {' +
+                        'width: 100%;' +
+                        'padding: 12px;' +
+                        'font-size: 14px;' +
+                    '}' +
+                    '#messageText {' +
+                        'font-size: 16px;' +
+                        'min-height: 120px;' +
+                    '}' +
+                    '#translateBtn {' +
+                        'font-size: 18px;' +
+                        'padding: 14px 24px;' +
+                    '}' +
+                '}' +
             '</style>' +
         '</head>' +
         '<body>' +
             '<div class="main-container">' +
-                '<h1>🌐 Smart Message Translator</h1>' +
                 
                 '<div class="form-group">' +
                     '<label for="messageText">Enter message to translate:</label>' +
@@ -192,19 +259,20 @@ exports.handler = (event, context, callback) => {
                 '<button id="translateBtn" type="button">Translate Message</button>' +
                 
                 '<div id="resultSection" class="result-section">' +
-                    '<label>📧 Email Subject:</label>' +
-                    '<div id="emailSubjectResult" class="email-subject-box"></div>' +
+                    '<div class="result-item">' +
+                        '<label>📧 Email Subject:</label>' +
+                        '<div class="result-content">' +
+                            '<div id="emailSubjectResult" class="email-subject-box"></div>' +
+                            '<button id="copySubjectBtn" class="copy-btn">📋 Copy Subject</button>' +
+                        '</div>' +
+                    '</div>' +
                     
-                    '<label>📝 English Translation:</label>' +
-                    '<div id="translationResult" class="result-box"></div>' +
-                    
-                    '<div class="insertion-buttons">' +
-                        '<button id="insertEmailBtn" class="insert-btn insert-email">' +
-                            '📧 Insert to Email' +
-                        '</button>' +
-                        '<button id="insertSmsBtn" class="insert-btn insert-sms">' +
-                            '📱 Insert to SMS' +
-                        '</button>' +
+                    '<div class="result-item">' +
+                        '<label>📝 Message:</label>' +
+                        '<div class="result-content">' +
+                            '<div id="translationResult" class="result-box"></div>' +
+                            '<button id="copyMessageBtn" class="copy-btn">📋 Copy Message</button>' +
+                        '</div>' +
                     '</div>' +
                 '</div>' +
                 
@@ -239,8 +307,8 @@ exports.handler = (event, context, callback) => {
                     'emailSubjectResult: document.getElementById("emailSubjectResult"),' +
                     'errorSection: document.getElementById("errorSection"),' +
                     'successSection: document.getElementById("successSection"),' +
-                    'insertEmailBtn: document.getElementById("insertEmailBtn"),' +
-                    'insertSmsBtn: document.getElementById("insertSmsBtn")' +
+                    'copySubjectBtn: document.getElementById("copySubjectBtn"),' +
+                    'copyMessageBtn: document.getElementById("copyMessageBtn")' +
                 '};' +
                 
                 '/* 文字カウンター */' +
@@ -261,14 +329,13 @@ exports.handler = (event, context, callback) => {
                     'performTranslation(messageText);' +
                 '});' +
                 
-                '/* Email挿入 */' +
-                'elements.insertEmailBtn.addEventListener("click", function() {' +
-                    'insertToEmail();' +
+                '/* Copy Button Events */' +
+                'elements.copySubjectBtn.addEventListener("click", function() {' +
+                    'copyToClipboard(currentTranslation.subject, this, "Subject copied!");' +
                 '});' +
                 
-                '/* SMS挿入 */' +
-                'elements.insertSmsBtn.addEventListener("click", function() {' +
-                    'insertToSMS();' +
+                'elements.copyMessageBtn.addEventListener("click", function() {' +
+                    'copyToClipboard(currentTranslation.text, this, "Message copied!");' +
                 '});' +
                 
                 'function performTranslation(text) {' +
@@ -314,57 +381,63 @@ exports.handler = (event, context, callback) => {
                     'xhr.send(requestData);' +
                 '}' +
                 
-                'function insertToEmail() {' +
+                'function copyToClipboard(text, buttonElement, successMessage) {' +
                     'try {' +
-                        '/* ServiceM8のEmail UIに挿入するためのデータ準備 */' +
-                        'var emailData = {' +
-                            'subject: currentTranslation.subject,' +
-                            'body: currentTranslation.text,' +
-                            'jobUuid: CONFIG.JOB_UUID' +
-                        '};' +
-                        
-                        '/* ServiceM8のsessionStorageに保存 */' +
-                        'if (typeof Storage !== "undefined") {' +
-                            'sessionStorage.setItem("translatedEmail", JSON.stringify(emailData));' +
+                        'if (!text) {' +
+                            'showError("Nothing to copy. Please translate first.");' +
+                            'return;' +
                         '}' +
                         
-                        '/* 成功メッセージを表示 */' +
-                        'showSuccess("Email content prepared! Open Job Card → Email → New Email to see the translation.");' +
-                        
-                        '/* 5秒後にウィンドウを閉じる */' +
-                        'setTimeout(function() {' +
-                            'client.closeWindow();' +
-                        '}, 3000);' +
-                        
+                        '/* Modern browsers with clipboard API */' +
+                        'if (navigator.clipboard && window.isSecureContext) {' +
+                            'navigator.clipboard.writeText(text).then(function() {' +
+                                'showCopySuccess(buttonElement, successMessage);' +
+                            '}).catch(function(err) {' +
+                                'fallbackCopyToClipboard(text, buttonElement, successMessage);' +
+                            '});' +
+                        '} else {' +
+                            '/* Fallback for older browsers */' +
+                            'fallbackCopyToClipboard(text, buttonElement, successMessage);' +
+                        '}' +
                     '} catch (error) {' +
-                        'showError("Failed to prepare email insertion: " + error.message);' +
+                        'showError("Failed to copy: " + error.message);' +
                     '}' +
                 '}' +
                 
-                'function insertToSMS() {' +
+                'function fallbackCopyToClipboard(text, buttonElement, successMessage) {' +
                     'try {' +
-                        '/* ServiceM8のSMS UIに挿入するためのデータ準備 */' +
-                        'var smsData = {' +
-                            'message: currentTranslation.text,' +
-                            'jobUuid: CONFIG.JOB_UUID' +
-                        '};' +
+                        'var textArea = document.createElement("textarea");' +
+                        'textArea.value = text;' +
+                        'textArea.style.position = "fixed";' +
+                        'textArea.style.opacity = "0";' +
+                        'document.body.appendChild(textArea);' +
+                        'textArea.focus();' +
+                        'textArea.select();' +
                         
-                        '/* ServiceM8のsessionStorageに保存 */' +
-                        'if (typeof Storage !== "undefined") {' +
-                            'sessionStorage.setItem("translatedSMS", JSON.stringify(smsData));' +
+                        'var successful = document.execCommand("copy");' +
+                        'document.body.removeChild(textArea);' +
+                        
+                        'if (successful) {' +
+                            'showCopySuccess(buttonElement, successMessage);' +
+                        '} else {' +
+                            'showError("Copy failed. Please manually select and copy the text.");' +
                         '}' +
-                        
-                        '/* 成功メッセージを表示 */' +
-                        'showSuccess("SMS content prepared! Open Job Card → SMS to see the translation.");' +
-                        
-                        '/* 5秒後にウィンドウを閉じる */' +
-                        'setTimeout(function() {' +
-                            'client.closeWindow();' +
-                        '}, 3000);' +
-                        
-                    '} catch (error) {' +
-                        'showError("Failed to prepare SMS insertion: " + error.message);' +
+                    '} catch (err) {' +
+                        'showError("Copy not supported. Please manually select and copy the text.");' +
                     '}' +
+                '}' +
+                
+                'function showCopySuccess(buttonElement, message) {' +
+                    'var originalText = buttonElement.textContent;' +
+                    'buttonElement.textContent = "✅ Copied!";' +
+                    'buttonElement.className = "copy-btn copied";' +
+                    
+                    'setTimeout(function() {' +
+                        'buttonElement.textContent = originalText;' +
+                        'buttonElement.className = "copy-btn";' +
+                    '}, 2000);' +
+                    
+                    'showSuccess(message);' +
                 '}' +
                 
                 'function setLoadingState(loading) {' +
