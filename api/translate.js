@@ -59,18 +59,27 @@ export default async function handler(req, res) {
 
     // ServiceM8互換のエラー処理
     try {
-        // Debug logging - full request analysis
-        console.log('=== Translation Request Debug ===');
+        // Critical early debug point
+        console.log('=== TRANSLATE API ENTRY POINT ===');
+        console.log('Timestamp:', new Date().toISOString());
         console.log('Method:', req.method);
+        console.log('URL:', req.url);
         console.log('Headers:', JSON.stringify(req.headers, null, 2));
-        console.log('Body:', JSON.stringify(req.body, null, 2));
+        console.log('Body type:', typeof req.body);
+        console.log('Body content:', JSON.stringify(req.body, null, 2));
         console.log('Query:', JSON.stringify(req.query, null, 2));
+        console.log('=== PROCESSING START ===');
         
         // Safe body parsing with fallback
+        console.log('STEP 1: Parsing request body...');
         var requestBody = req.body || {};
+        console.log('Initial body:', requestBody, 'Type:', typeof requestBody);
+        
         if (typeof requestBody === 'string') {
+            console.log('Body is string, attempting JSON parse...');
             try {
                 requestBody = JSON.parse(requestBody);
+                console.log('JSON parse successful:', requestBody);
             } catch (parseError) {
                 console.error('JSON parse error:', parseError);
                 return res.status(400).json({ 
@@ -79,32 +88,52 @@ export default async function handler(req, res) {
             }
         }
         
+        console.log('STEP 2: Request body parsed successfully:', requestBody);
+        
         // Validate request body
+        console.log('STEP 3: Extracting request parameters...');
         var text = requestBody.text;
         var company_uuid = requestBody.company_uuid;
         var access_token = requestBody.access_token;
         var session_token = requestBody.session_token;
+        
+        console.log('Extracted parameters:', {
+            text: text ? text.substring(0, 50) + '...' : text,
+            company_uuid: company_uuid ? company_uuid.substring(0, 8) + '***' : company_uuid,
+            access_token: access_token ? 'present' : 'missing',
+            session_token: session_token ? 'present' : 'missing'
+        });
 
         // Resolve session token to get actual credentials
+        console.log('STEP 4: Resolving credentials...');
         var resolvedCredentials = { 
             company_uuid: company_uuid, 
             access_token: access_token 
         };
         
         if (session_token && !access_token) {
-            // Use session token to resolve credentials
+            console.log('Using session token to resolve credentials...');
             var sessionData = resolveSessionToken(session_token);
             if (!sessionData) {
+                console.error('Session token resolution failed');
                 return res.status(401).json({ 
                     error: 'Invalid or expired session' 
                 });
             }
             resolvedCredentials = sessionData;
+            console.log('Session token resolved successfully');
         } else if (!text || !company_uuid || !access_token) {
+            console.error('Missing required fields:', {
+                text: !!text,
+                company_uuid: !!company_uuid,
+                access_token: !!access_token
+            });
             return res.status(400).json({ 
                 error: 'Missing required fields: text and authentication' 
             });
         }
+        
+        console.log('STEP 5: Credentials resolved, proceeding with translation...');
 
         // Use resolved credentials
         var finalCompanyUuid = resolvedCredentials.company_uuid;
@@ -202,20 +231,34 @@ export default async function handler(req, res) {
 
     } catch (error) {
         // Log error (structured logging - no sensitive data)
-        console.error('CRITICAL ERROR:', error);
+        console.error('=== CRITICAL ERROR OCCURRED ===');
+        console.error('Error name:', error.name);
+        console.error('Error message:', error.message);
         console.error('Error stack:', error.stack);
-        console.error(JSON.stringify({
+        console.error('Request URL:', req.url);
+        console.error('Request method:', req.method);
+        console.error('Request headers:', JSON.stringify(req.headers));
+        console.error('Request body type:', typeof req.body);
+        console.error('Processing time:', Date.now() - startTime, 'ms');
+        console.error('=== ERROR DETAILS END ===');
+        
+        console.error('Structured error log:', JSON.stringify({
             timestamp: new Date().toISOString(),
             level: 'error',
             message: 'Translation failed',
-            error: error.message.replace(/Bearer [A-Za-z0-9_-]+/g, 'Bearer ***'), // Remove API keys from error messages
+            error: error.message.replace(/Bearer [A-Za-z0-9_-]+/g, 'Bearer ***'),
+            error_name: error.name,
             company_uuid: req.body?.company_uuid ? req.body.company_uuid.substring(0, 8) + '***' : 'unknown',
-            processing_time_ms: Date.now() - startTime
+            processing_time_ms: Date.now() - startTime,
+            url: req.url,
+            method: req.method
         }));
 
         return res.status(500).json({
             error: 'Translation service temporarily unavailable',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            details: error.message, // Always show error details for debugging
+            error_name: error.name,
+            timestamp: new Date().toISOString()
         });
     }
 }
