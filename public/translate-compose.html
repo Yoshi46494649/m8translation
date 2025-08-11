@@ -8,10 +8,6 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Smart Message Translator</h1>
-            <div class="status-indicator" id="statusIndicator">Ready</div>
-        </div>
         
         <div class="main-content">
             <div class="input-section">
@@ -29,15 +25,16 @@
             </div>
             
             <div class="translation-section" id="translationSection" style="display: none;">
-                <label for="translatedOutput">English Translation:</label>
+                <label for="translatedOutput">Translated Message:</label>
                 <div class="output-container">
                     <div id="translatedOutput" class="translated-text"></div>
-                    <button id="copyButton" class="copy-button" title="Copy to clipboard">📋</button>
+                    <button id="copyButton" class="copy-button" title="Copy message to clipboard">📋</button>
                 </div>
                 
-                <label for="emailSubject">Generated Email Subject:</label>
+                <label for="emailSubject">Email Subject:</label>
                 <div class="output-container">
                     <div id="emailSubject" class="email-subject"></div>
+                    <button id="copySubjectButton" class="copy-button" title="Copy subject to clipboard">📋</button>
                 </div>
             </div>
             
@@ -47,35 +44,10 @@
                     <span class="loading-spinner" id="loadingSpinner"></span>
                 </button>
                 
-                <div class="action-buttons" id="actionButtons" style="display: none;">
-                    <button id="emailButton" class="secondary-button">
-                        📧 Translate & Open Email
-                    </button>
-                    <button id="smsButton" class="tertiary-button">
-                        📱 Send as SMS
-                    </button>
-                </div>
             </div>
             
-            <div class="progress-status" id="progressStatus" style="display: none;">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-                <div class="progress-text" id="progressText">Translating...</div>
-            </div>
-            
-            <div class="auto-close" id="autoClose" style="display: none;">
-                <div class="countdown">Auto-closing in <span id="countdown">5</span> seconds</div>
-                <button id="cancelClose" class="cancel-button">Cancel</button>
-            </div>
         </div>
         
-        <div class="footer">
-            <div class="keyboard-shortcuts">
-                <span>Ctrl+Enter: Translate & Email</span>
-                <span>Esc: Close</span>
-            </div>
-        </div>
     </div>
     
     <script src="script.js"></script>

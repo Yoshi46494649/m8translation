@@ -39,45 +39,7 @@ body {
     height: 100vh;
 }
 
-/* Header */
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid #dee2e6;
-    padding-bottom: 12px;
-}
 
-.header h1 {
-    font-size: 18px;
-    color: var(--servicem8-primary);
-    font-weight: bold;
-}
-
-.status-indicator {
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: var(--border-radius);
-    background-color: var(--servicem8-light);
-    color: var(--servicem8-secondary);
-    font-weight: 500;
-}
-
-.status-indicator.ready {
-    background-color: var(--servicem8-success);
-    color: white;
-}
-
-.status-indicator.translating {
-    background-color: var(--servicem8-warning);
-    color: var(--servicem8-dark);
-}
-
-.status-indicator.error {
-    background-color: var(--servicem8-danger);
-    color: white;
-}
 
 /* Main Content */
 .main-content {
@@ -146,12 +108,19 @@ body {
     margin-bottom: 12px;
 }
 
-.translated-text, .email-subject {
+.translated-text {
     padding: 12px;
     border: 1px solid #dee2e6;
     border-radius: var(--border-radius);
     background-color: var(--servicem8-light);
-    min-height: 60px;
+    min-height: 80px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.email-subject {
+    padding: 12px;
+    border-radius: var(--border-radius);
     white-space: pre-wrap;
     word-wrap: break-word;
 }
@@ -159,7 +128,9 @@ body {
 .email-subject {
     font-weight: 500;
     color: var(--servicem8-primary);
-    min-height: auto;
+    min-height: 40px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
 }
 
 .copy-button {
@@ -177,6 +148,11 @@ body {
 
 .copy-button:hover {
     background-color: rgba(0, 124, 186, 0.1);
+}
+
+.copy-button.copied {
+    color: var(--servicem8-success);
+    background-color: rgba(40, 167, 69, 0.1);
 }
 
 /* Buttons */
@@ -211,26 +187,6 @@ body {
     cursor: not-allowed;
 }
 
-.secondary-button {
-    background-color: var(--servicem8-success);
-    color: white;
-    flex: 1;
-    margin-right: 8px;
-}
-
-.secondary-button:hover {
-    background-color: #218838;
-}
-
-.tertiary-button {
-    background-color: var(--servicem8-secondary);
-    color: white;
-    flex: 1;
-}
-
-.tertiary-button:hover {
-    background-color: #5a6268;
-}
 
 .cancel-button {
     background-color: var(--servicem8-danger);
@@ -244,10 +200,6 @@ body {
 }
 
 /* Action Buttons */
-.action-buttons {
-    display: flex;
-    gap: 8px;
-}
 
 /* Loading Spinner */
 .loading-spinner {
@@ -269,60 +221,8 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-/* Progress Status */
-.progress-status {
-    margin-bottom: 12px;
-}
 
-.progress-bar {
-    width: 100%;
-    height: 4px;
-    background-color: #dee2e6;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 8px;
-}
 
-.progress-fill {
-    height: 100%;
-    background-color: var(--servicem8-primary);
-    transition: width 0.3s ease;
-    width: 0%;
-}
-
-.progress-text {
-    font-size: 12px;
-    color: var(--servicem8-secondary);
-    text-align: center;
-}
-
-/* Auto Close */
-.auto-close {
-    text-align: center;
-    padding: 12px;
-    background-color: var(--servicem8-light);
-    border-radius: var(--border-radius);
-    margin-bottom: 12px;
-}
-
-.countdown {
-    font-size: 14px;
-    color: var(--servicem8-secondary);
-    margin-bottom: 8px;
-}
-
-/* Footer */
-.footer {
-    border-top: 1px solid #dee2e6;
-    padding-top: 12px;
-}
-
-.keyboard-shortcuts {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    color: var(--servicem8-secondary);
-}
 
 /* Mobile Responsiveness */
 @media (max-width: 480px) {
@@ -332,22 +232,11 @@ body {
     }
     
     .header h1 {
-        font-size: 16px;
+        font-size: 18px;
     }
     
-    .action-buttons {
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .secondary-button, .tertiary-button {
-        margin-right: 0;
-        flex: none;
-    }
-    
-    .keyboard-shortcuts {
-        flex-direction: column;
-        gap: 4px;
+    .secondary-button {
+        margin-top: 8px;
     }
 }
 

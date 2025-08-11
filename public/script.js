@@ -25,22 +25,11 @@ class TranslationApp {
 
         // Button elements
         this.translateButton = document.getElementById('translateButton');
-        this.emailButton = document.getElementById('emailButton');
-        this.smsButton = document.getElementById('smsButton');
         this.copyButton = document.getElementById('copyButton');
-        this.actionButtons = document.getElementById('actionButtons');
+        this.copySubjectButton = document.getElementById('copySubjectButton');
 
         // Status elements
-        this.statusIndicator = document.getElementById('statusIndicator');
         this.loadingSpinner = document.getElementById('loadingSpinner');
-        this.progressStatus = document.getElementById('progressStatus');
-        this.progressFill = document.getElementById('progressFill');
-        this.progressText = document.getElementById('progressText');
-
-        // Auto-close elements
-        this.autoClose = document.getElementById('autoClose');
-        this.countdown = document.getElementById('countdown');
-        this.cancelClose = document.getElementById('cancelClose');
 
         // ServiceM8 context
         this.serviceM8Context = null;
@@ -53,10 +42,8 @@ class TranslationApp {
 
         // Button events
         this.translateButton.addEventListener('click', this.handleTranslate.bind(this));
-        this.emailButton.addEventListener('click', this.handleOpenEmail.bind(this));
-        this.smsButton.addEventListener('click', this.handleOpenSMS.bind(this));
-        this.copyButton.addEventListener('click', this.handleCopy.bind(this));
-        this.cancelClose.addEventListener('click', this.handleCancelClose.bind(this));
+        this.copyButton.addEventListener('click', this.handleCopyMessage.bind(this));
+        this.copySubjectButton.addEventListener('click', this.handleCopySubject.bind(this));
 
         // Auto-detect language on input
         this.messageInput.addEventListener('input', this.debounce(this.detectLanguage.bind(this), 500));
@@ -82,7 +69,8 @@ class TranslationApp {
         try {
             // Get ServiceM8 context from injected configuration (secure)
             if (!window.SERVICEM8_CONFIG) {
-                this.showError('ServiceM8 configuration not found');
+                console.error('ServiceM8 configuration not found');
+            this.showError('ServiceM8 configuration not found');
                 return;
             }
 
@@ -94,13 +82,15 @@ class TranslationApp {
 
             // Validate required parameters
             if (!this.serviceM8Context.company_uuid || !this.serviceM8Context.session_token) {
-                this.showError('Missing ServiceM8 authentication parameters');
+                console.error('Missing ServiceM8 authentication parameters');
+            this.showError('Missing ServiceM8 authentication parameters');
                 return;
             }
 
-            this.updateStatus('Ready', 'ready');
+            console.log('ServiceM8 context loaded successfully');
         } catch (error) {
             console.error('Failed to load ServiceM8 context:', error);
+            console.error('Failed to initialize ServiceM8 context');
             this.showError('Failed to initialize ServiceM8 context');
         }
     }
@@ -225,31 +215,11 @@ class TranslationApp {
     startTranslation() {
         this.translateButton.disabled = true;
         this.loadingSpinner.classList.add('active');
-        this.updateStatus('Translating...', 'translating');
-        this.showProgress(0, 'Translating...');
-
-        // Simulate progress
-        let progress = 0;
-        this.progressInterval = setInterval(() => {
-            progress += 10;
-            if (progress <= 90) {
-                this.showProgress(progress, 'Translating...');
-            }
-        }, 200);
     }
 
     endTranslation() {
         this.translateButton.disabled = false;
         this.loadingSpinner.classList.remove('active');
-        
-        if (this.progressInterval) {
-            clearInterval(this.progressInterval);
-        }
-        
-        this.showProgress(100, 'Translation complete');
-        setTimeout(() => {
-            this.progressStatus.style.display = 'none';
-        }, 1000);
     }
 
     showTranslationResult(data) {
@@ -268,32 +238,30 @@ class TranslationApp {
         this.translationSection.style.display = 'block';
         this.translationSection.classList.add('fade-in');
         
-        // Show action buttons
-        this.actionButtons.style.display = 'flex';
-        
-        // Auto-copy to clipboard
-        this.copyToClipboard(data.translated_text, false);
-        
-        this.updateStatus('Translation complete', 'ready');
-        
-        // Start auto-close countdown
-        this.startAutoClose();
     }
 
-    async handleCopy() {
+    async handleCopyMessage() {
         const text = this.translatedOutput.textContent;
-        await this.copyToClipboard(text, true);
+        await this.copyToClipboard(text, this.copyButton);
     }
 
-    async copyToClipboard(text, showNotification = true) {
+    async handleCopySubject() {
+        const text = this.emailSubject.textContent;
+        await this.copyToClipboard(text, this.copySubjectButton);
+    }
+
+    async copyToClipboard(text, buttonElement) {
         try {
             await navigator.clipboard.writeText(text);
-            if (showNotification) {
-                this.copyButton.textContent = '✓';
-                setTimeout(() => {
-                    this.copyButton.textContent = '📋';
-                }, 2000);
-            }
+            // Visual feedback
+            const originalText = buttonElement.textContent;
+            buttonElement.textContent = '✓';
+            buttonElement.classList.add('copied');
+            
+            setTimeout(() => {
+                buttonElement.textContent = originalText;
+                buttonElement.classList.remove('copied');
+            }, 2000);
         } catch (error) {
             console.error('Failed to copy to clipboard:', error);
             // Fallback for older browsers
@@ -306,83 +274,8 @@ class TranslationApp {
         }
     }
 
-    handleOpenEmail() {
-        const translatedText = this.translatedOutput.textContent;
-        const subject = this.emailSubject.textContent;
-        
-        if (!translatedText) {
-            this.showError('Please translate the message first');
-            return;
-        }
-        
-        try {
-            // ServiceM8 specific email composition
-            if (typeof ServiceM8 !== 'undefined' && ServiceM8.composeEmail) {
-                ServiceM8.composeEmail({
-                    subject: subject,
-                    body: translatedText
-                });
-            } else {
-                // Fallback: Standard mailto link
-                const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(translatedText)}`;
-                window.open(mailtoLink);
-            }
-            
-            this.closeDialog();
-        } catch (error) {
-            console.error('Failed to open email composer:', error);
-            this.showError('Failed to open email composer');
-        }
-    }
 
-    handleOpenSMS() {
-        const translatedText = this.translatedOutput.textContent;
-        
-        if (!translatedText) {
-            this.showError('Please translate the message first');
-            return;
-        }
-        
-        try {
-            // ServiceM8 specific SMS composition
-            if (typeof ServiceM8 !== 'undefined' && ServiceM8.composeSMS) {
-                ServiceM8.composeSMS({
-                    body: translatedText
-                });
-            } else {
-                // Fallback: Standard SMS link
-                const smsLink = `sms:?body=${encodeURIComponent(translatedText)}`;
-                window.open(smsLink);
-            }
-            
-            this.closeDialog();
-        } catch (error) {
-            console.error('Failed to open SMS composer:', error);
-            this.showError('Failed to open SMS composer');
-        }
-    }
 
-    startAutoClose() {
-        let countdown = 5;
-        this.countdown.textContent = countdown;
-        this.autoClose.style.display = 'block';
-        
-        this.countdownInterval = setInterval(() => {
-            countdown--;
-            this.countdown.textContent = countdown;
-            
-            if (countdown <= 0) {
-                this.closeDialog();
-            }
-        }, 1000);
-    }
-
-    handleCancelClose() {
-        if (this.countdownInterval) {
-            clearInterval(this.countdownInterval);
-        }
-        this.autoClose.style.display = 'none';
-    }
 
     closeDialog() {
         try {
@@ -399,19 +292,8 @@ class TranslationApp {
         }
     }
 
-    showProgress(percentage, message) {
-        this.progressStatus.style.display = 'block';
-        this.progressFill.style.width = `${percentage}%`;
-        this.progressText.textContent = message;
-    }
-
-    updateStatus(message, type = '') {
-        this.statusIndicator.textContent = message;
-        this.statusIndicator.className = `status-indicator ${type}`;
-    }
 
     showError(message) {
-        this.updateStatus('Error', 'error');
         alert(message); // Simple error display for now
         console.error('App Error:', message);
     }
