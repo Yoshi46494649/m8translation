@@ -42,8 +42,8 @@ exports.handler = (event, context, callback) => {
     // ================================================================
     
     const CONFIG = {
-        // API Configuration - Using secure endpoint (post-deployment)
-        TRANSLATION_API_URL: 'https://m8translation.vercel.app/api/secure-translate',
+        // API Configuration - Using working translate endpoint with OpenAI
+        TRANSLATION_API_URL: 'https://m8translation.vercel.app/api/translate',
         SESSION_API_URL: 'https://m8translation.vercel.app/api/session',
         REQUEST_TIMEOUT: 15000,
         
@@ -549,11 +549,11 @@ exports.handler = (event, context, callback) => {
                 
                 xhr.open("POST", "${CONFIG.TRANSLATION_API_URL}", true);
                 xhr.setRequestHeader("Content-Type", "application/json");
-                xhr.setRequestHeader("X-ServiceM8-Session", "${sessionId}");
                 
                 var requestData = {
                     text: text,
-                    session_id: "${sessionId}"
+                    company_uuid: "${strAccountUUID}",
+                    access_token: "${strAccessToken}"
                 };
                 
                 xhr.send(JSON.stringify(requestData));
