@@ -159,50 +159,45 @@ async function handleRequest(req, res) {
             });
         }
 
-        // Force mock response with polite business style
-        console.log('Using mock response with polite business style');
-        return res.status(200).json({
-            translated_text: "Thank you very much for tomorrow. We will take care of the cleaning service for you.",
-            email_subject: "Service Update - Tomorrow's Cleaning Appointment", 
-            detected_language: "Japanese",
-            processing_time_ms: Date.now() - startTime
-        });
-
         // Get OpenAI API key (in production, fetch from encrypted storage)
-        // var openaiApiKey = process.env.OPENAI_API_KEY;
-        // if (!openaiApiKey) {
-        //     console.error('OpenAI API key not configured - using mock response for testing');
-        //     // Return mock translation for testing
-        //     return res.status(200).json({
-        //         translated_text: "Thank you for tomorrow. I'll clean up.",
-        //         email_subject: "Service Update - Tomorrow's cleaning schedule",
-        //         detected_language: "Japanese",
-        //         processing_time_ms: Date.now() - startTime
-        //     });
-        // }
+        var openaiApiKey = process.env.OPENAI_API_KEY;
+        console.log('DEBUG: OpenAI API key status:', openaiApiKey ? 'Present (length: ' + openaiApiKey.length + ')' : 'Missing');
+        
+        if (!openaiApiKey) {
+            console.error('OpenAI API key not configured - using mock response for testing');
+            // Return mock translation for testing
+            return res.status(200).json({
+                translated_text: "Thank you for tomorrow. I'll clean up.",
+                email_subject: "Service Update - Tomorrow's cleaning schedule",
+                detected_language: "Japanese",
+                processing_time_ms: Date.now() - startTime
+            });
+        }
+        
+        console.log('DEBUG: About to call translateWithOpenAI with text:', sanitizedText);
 
-        // // Detect language and translate using sanitized text
-        // var translationResult = await translateWithOpenAI(sanitizedText, openaiApiKey);
+        // Detect language and translate using sanitized text
+        var translationResult = await translateWithOpenAI(sanitizedText, openaiApiKey);
 
         // Log successful translation (structured logging - no sensitive data)
-        // console.log(JSON.stringify({
-        //     timestamp: new Date().toISOString(),
-        //     level: 'info',
-        //     message: 'Translation completed',
-        //     company_uuid: finalCompanyUuid.substring(0, 8) + '***', // Masked UUID
-        //     processing_time_ms: Date.now() - startTime,
-        //     detected_language: translationResult.detected_language,
-        //     character_count: sanitizedText.length,
-        //     text_hash: crypto.createHash('sha256').update(sanitizedText).digest('hex').substring(0, 16) // Content fingerprint only
-        // }));
+        console.log(JSON.stringify({
+            timestamp: new Date().toISOString(),
+            level: 'info',
+            message: 'Translation completed',
+            company_uuid: finalCompanyUuid.substring(0, 8) + '***', // Masked UUID
+            processing_time_ms: Date.now() - startTime,
+            detected_language: translationResult.detected_language,
+            character_count: sanitizedText.length,
+            text_hash: crypto.createHash('sha256').update(sanitizedText).digest('hex').substring(0, 16) // Content fingerprint only
+        }));
 
         // Return successful response
-        // return res.status(200).json({
-        //     translated_text: translationResult.translated_text,
-        //     email_subject: translationResult.email_subject,
-        //     detected_language: translationResult.detected_language,
-        //     processing_time_ms: Date.now() - startTime
-        // });
+        return res.status(200).json({
+            translated_text: translationResult.translated_text,
+            email_subject: translationResult.email_subject,
+            detected_language: translationResult.detected_language,
+            processing_time_ms: Date.now() - startTime
+        });
 
     } catch (error) {
         // Log error (structured logging - no sensitive data)
@@ -298,6 +293,8 @@ async function isValidServiceM8Token(token, companyUuid) {
  * OpenAI GPT-4 translation implementation
  */
 async function translateWithOpenAI(text, apiKey) {
+    console.log('DEBUG: translateWithOpenAI called with text length:', text.length);
+    
     const systemPrompt = `You are a professional business translator specializing in courteous service provider communications.
 
 Your tasks:
@@ -325,6 +322,7 @@ Respond ONLY in valid JSON format:
 }`;
 
     // Use global fetch (available in Node.js 18+)
+    console.log('DEBUG: Making request to OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -345,17 +343,25 @@ Respond ONLY in valid JSON format:
         })
     });
 
+    console.log('DEBUG: OpenAI API response status:', response.status);
+    
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('DEBUG: OpenAI API error:', errorData);
         throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
+    console.log('DEBUG: OpenAI API response data:', JSON.stringify(data, null, 2));
+    
     const content = data.choices[0]?.message?.content;
 
     if (!content) {
+        console.error('DEBUG: No content in OpenAI response');
         throw new Error('No translation content received from OpenAI');
     }
+    
+    console.log('DEBUG: OpenAI response content:', content);
 
     try {
         const result = JSON.parse(content);

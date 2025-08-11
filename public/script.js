@@ -170,6 +170,12 @@ class TranslationApp {
         this.startTranslation();
 
         try {
+            console.log('DEBUG: Making translation request with:', {
+                text: text,
+                company_uuid: this.serviceM8Context.company_uuid,
+                session_token: this.serviceM8Context.session_token ? 'present' : 'missing'
+            });
+            
             const response = await fetch('/api/translate', {
                 method: 'POST',
                 headers: {
@@ -181,13 +187,17 @@ class TranslationApp {
                     session_token: this.serviceM8Context.session_token // Use secure session token
                 })
             });
+            
+            console.log('DEBUG: Translation response status:', response.status);
 
             if (!response.ok) {
                 const errorData = await response.json();
+                console.error('DEBUG: Translation error response:', errorData);
                 throw new Error(errorData.error || 'Translation failed');
             }
 
             const data = await response.json();
+            console.log('DEBUG: Translation success response:', data);
             this.showTranslationResult(data);
             this.rateLimiter.recordRequest();
 
