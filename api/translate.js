@@ -16,8 +16,22 @@ export const config = {
 
 // Vercel will auto-detect this as a serverless function
 export default async function handler(req, res) {
-    // CORS設定
-    res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
+    // CORS設定 - ServiceM8の複数オリジンに対応
+    const allowedOrigins = [
+        'https://app.servicem8.com',
+        'https://addon.go.servicem8.com',
+        'https://go.servicem8.com',
+        'https://platform.servicem8.com'
+    ];
+    
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        // デフォルトでaddon.go.servicem8.comを許可
+        res.setHeader('Access-Control-Allow-Origin', 'https://addon.go.servicem8.com');
+    }
+    
     res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     

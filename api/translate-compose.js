@@ -15,8 +15,21 @@ module.exports = async function handler(req, res) {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
     
-    // CORS headers for ServiceM8
-    res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
+    // CORS headers for ServiceM8 - 複数オリジンに対応
+    const allowedOrigins = [
+        'https://app.servicem8.com',
+        'https://addon.go.servicem8.com',
+        'https://go.servicem8.com',
+        'https://platform.servicem8.com'
+    ];
+    
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        res.setHeader('Access-Control-Allow-Origin', 'https://addon.go.servicem8.com');
+    }
+    
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 

@@ -6,8 +6,20 @@
 // Vercel will auto-detect this as a serverless function
 
 module.exports = async function handler(req, res) {
-    // CORS and security headers
-    res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
+    // CORS headers - ServiceM8複数オリジン対応
+    const allowedOrigins = [
+        'https://app.servicem8.com',
+        'https://addon.go.servicem8.com',
+        'https://go.servicem8.com',
+        'https://platform.servicem8.com'
+    ];
+    
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else {
+        res.setHeader('Access-Control-Allow-Origin', 'https://addon.go.servicem8.com');
+    }
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
     res.setHeader('X-Frame-Options', 'ALLOWALL');
