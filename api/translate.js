@@ -8,41 +8,27 @@ const crypto = require('crypto');
 // Rate limiting storage (in production, use Redis/KV)
 const rateLimitStore = new Map();
 
-// Vercel will auto-detect this as a serverless function
-
-module.exports = function handler(req, res) {
-    // Wrap everything in try-catch for maximum error capture
-    try {
-        return handleRequest(req, res);
-    } catch (error) {
-        console.error('Critical handler error:', error);
-        return res.status(500).json({ 
-            error: 'Internal server error',
-            details: error.message 
-        });
-    }
+// Vercel runtime configuration
+export const config = {
+    runtime: 'nodejs18.x',
+    maxDuration: 10 // 10秒制限
 };
 
-async function handleRequest(req, res) {
-    // CORS and security headers - ServiceM8 multiple origins support
-    var allowedOrigins = [
-        'https://app.servicem8.com',
-        'https://addon.go.servicem8.com',
-        'https://go.servicem8.com',
-        'https://platform.servicem8.com'
-    ];
-    
-    var origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-    } else {
-        res.setHeader('Access-Control-Allow-Origin', 'https://addon.go.servicem8.com');
-    }
-    
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+// Vercel will auto-detect this as a serverless function
+export default async function handler(req, res) {
+    // CORS設定
+    res.setHeader('Access-Control-Allow-Origin', 'https://app.servicem8.com');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'false');
+    
+    // iframe許可
     res.setHeader('X-Frame-Options', 'ALLOWALL');
+    
+    // HTTPS強制
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+        return res.redirect(301, `https://${req.headers.host}${req.url}`);
+    }
+
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
     // Handle preflight requests
@@ -57,6 +43,7 @@ async function handleRequest(req, res) {
 
     var startTime = Date.now();
 
+    // ServiceM8互換のエラー処理
     try {
         // Debug logging - full request analysis
         console.log('=== Translation Request Debug ===');
@@ -201,6 +188,8 @@ async function handleRequest(req, res) {
 
     } catch (error) {
         // Log error (structured logging - no sensitive data)
+        console.error('CRITICAL ERROR:', error);
+        console.error('Error stack:', error.stack);
         console.error(JSON.stringify({
             timestamp: new Date().toISOString(),
             level: 'error',
