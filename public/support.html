@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Message Translator - Support</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .support-container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .faq-item { margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
+        .faq-question { background: #f5f5f5; padding: 15px; cursor: pointer; font-weight: bold; }
+        .faq-answer { padding: 15px; display: none; }
+        .faq-answer.active { display: block; }
+        .contact-info { background: #e7f3ff; padding: 20px; border-radius: 5px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="support-container">
+        <h1>Smart Message Translator - Support</h1>
+        
+        <h2>Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How do I use the translator?</div>
+            <div class="faq-answer">
+                <p>1. Open a job card in ServiceM8</p>
+                <p>2. Click on the "Translate Message" action</p>
+                <p>3. Enter your message in the text area</p>
+                <p>4. Click "Translate Message"</p>
+                <p>5. Copy the translated text using the clipboard buttons</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Which languages are supported?</div>
+            <div class="faq-answer">
+                <p>We support over 100 languages including:</p>
+                <ul>
+                    <li>Spanish, French, German, Italian</li>
+                    <li>Chinese (Simplified & Traditional), Japanese, Korean</li>
+                    <li>Arabic, Hebrew, Russian, Portuguese</li>
+                    <li>And many more!</li>
+                </ul>
+                <p>The system automatically detects your input language.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">Is my data secure?</div>
+            <div class="faq-answer">
+                <p>Yes! We prioritize your privacy:</p>
+                <ul>
+                    <li>Messages are processed securely via encrypted connections</li>
+                    <li>We don't store your translated content</li>
+                    <li>All data is processed in real-time and discarded</li>
+                    <li>GDPR compliant</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">What's the character limit?</div>
+            <div class="faq-answer">
+                <p>Each message can be up to 1,000 characters long. This covers most business communications while ensuring fast, accurate translations.</p>
+            </div>
+        </div>
+        
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">How accurate are the translations?</div>
+            <div class="faq-answer">
+                <p>We use OpenAI's GPT-4 for translations, providing:</p>
+                <ul>
+                    <li>Context-aware translations</li>
+                    <li>Professional business tone</li>
+                    <li>Industry-specific terminology recognition</li>
+                    <li>High accuracy for common business scenarios</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="contact-info">
+            <h3>Need More Help?</h3>
+            <p><strong>Email Support:</strong> help@sparklewindow.com.au</p>
+            <p><strong>Response Time:</strong> Within 24 hours</p>
+            <p>We're here to help you communicate effectively with your international customers!</p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleFaq(element) {
+            const answer = element.nextElementSibling;
+            answer.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>
