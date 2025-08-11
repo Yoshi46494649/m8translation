@@ -10,7 +10,7 @@ const rateLimitStore = new Map();
 
 // Vercel runtime configuration
 export const config = {
-    runtime: 'nodejs18.x',
+    runtime: 'nodejs',
     maxDuration: 10 // 10秒制限
 };
 
