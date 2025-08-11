@@ -2,6 +2,8 @@
 
 AI-powered translation add-on for ServiceM8 that automatically translates messages to English with business email subject generation.
 
+*Updated with new OpenAI API key configuration - January 2025*
+
 ## Features
 
 - **Auto Language Detection**: Detects 50+ languages including Japanese, Korean, Chinese, Spanish, French, German
