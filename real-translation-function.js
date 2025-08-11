@@ -42,7 +42,7 @@ exports.handler = (event, context, callback) => {
     // ================================================================
     
     const CONFIG = {
-        // API Configuration - Using secure endpoint
+        // API Configuration - Using secure endpoint (post-deployment)
         TRANSLATION_API_URL: 'https://m8translation.vercel.app/api/secure-translate',
         SESSION_API_URL: 'https://m8translation.vercel.app/api/session',
         REQUEST_TIMEOUT: 15000,
