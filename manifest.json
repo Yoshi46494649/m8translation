@@ -1,15 +1,15 @@
 {
   "name": "Smart Message Translator",
   "version": "1.0",
-  "iconURL": "https://www.servicem8.com/images/addon-sdk-sample-icon.png",
-  "supportURL": "https://m8translation.vercel.app",
-  "supportEmail": "support@m8translation.com",
+  "iconURL": "https://m8translation.vercel.app/iconlogo.png",
+  "supportURL": "https://m8translation.vercel.app/support",
+  "supportEmail": "help@sparklewindow.com.au",
   "actions": [
     {
       "name": "Translate Message",
       "type": "online",
       "entity": "job",
-      "iconURL": "https://www.servicem8.com/images/addon-sdk-sample-icon.png",
+      "iconURL": "https://m8translation.vercel.app/iconlogo.png",
       "event": "translate_message"
     }
   ]
