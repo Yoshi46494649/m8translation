@@ -176,7 +176,7 @@ class TranslationApp {
                 session_token: this.serviceM8Context.session_token ? 'present' : 'missing'
             });
             
-            const response = await fetch('/api/translate', {
+            const response = await fetch('/api/translate-simple', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
